@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# YatrAI — AI-Powered Travel Planner for India
 
-## Getting Started
+> **YatrAI** is an intelligent travel planning platform built for Indian travelers. It uses Claude AI to generate detailed, budget-aware itineraries with IRCTC train routes, local accommodation, and INR pricing.
 
-First, run the development server:
+## Tech Stack
+
+- **Frontend**: Next.js 16 (App Router, TypeScript, Tailwind CSS v4)
+- **Backend**: FastAPI + Uvicorn (Python 3.11)
+- **AI Engine**: Claude Sonnet (Anthropic API)
+- **Database**: PostgreSQL-ready (in-memory mock for now)
+- **Deployment**: Docker Compose
+
+## Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/yatrai.git
+cd yatrai
+cp backend/.env.example backend/.env
+# Add your ANTHROPIC_API_KEY to backend/.env
+docker compose up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Local Development (without Docker)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Terminal 1 — Frontend
+npm install
+npm run dev
 
-## Learn More
+# Terminal 2 — Backend
+cd backend
+pip install -r requirements.txt
+cd ..
+uvicorn backend.main:app --reload --port 8000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ANTHROPIC_API_KEY` | Yes | From [console.anthropic.com](https://console.anthropic.com) |
+| `DATABASE_URL` | No | PostgreSQL connection string (future use) |
+| `REDIS_URL` | No | Redis for Celery task queue (future use) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Note**: If `ANTHROPIC_API_KEY` is not set, the app falls back to realistic mock itineraries — perfect for development and demos.
 
-## Deploy on Vercel
+## Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 🤖 **AI Itinerary Generation** — Claude Sonnet crafts detailed day-by-day plans
+- 🇮🇳 **India-Specific** — IRCTC trains, OYO/Zostel, dharamshalas, realistic INR pricing
+- 🧭 **3-Step Trip Wizard** — Destination → Group → Budget & Style
+- 🗺️ **Explore Destinations** — 12 curated destinations with category/type filters
+- 📱 **Responsive Design** — Works beautifully on mobile, tablet, and desktop
+- 🐳 **Docker Ready** — One command to spin up the entire stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/itinerary/generate` | Generate AI itinerary |
+| `GET` | `/api/destinations` | List destinations (supports `?category=` and `?type=` filters) |
+| `GET` | `/health` | Health check |
+
+## Project Structure
+
+```
+yatrai/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx            # Home page
+│   ├── explore/            # Explore destinations
+│   ├── plan/               # 3-step trip wizard
+│   └── itinerary/result/   # AI-generated itinerary display
+├── components/ui/          # Shared UI components (Navbar, Footer, WhatsAppFAB)
+├── backend/                # FastAPI backend
+│   ├── main.py             # App entry + CORS config
+│   ├── routers/            # API route handlers
+│   ├── services/           # Business logic (Claude AI, destinations)
+│   └── models/             # Pydantic request/response schemas
+├── docker-compose.yml
+└── README.md
+```
+
+## License
+
+MIT

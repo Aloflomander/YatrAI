@@ -39,3 +39,25 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.next/
+backend/__pycache__/
+backend/**/__pycache__/
+
+# Build output
+out/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
